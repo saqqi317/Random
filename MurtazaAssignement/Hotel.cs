@@ -6,9 +6,10 @@
     /// <summary> Represents the hotel object that contains rooms. </summary>
     public class Hotel
     {
-
         /// <summary> Maps the room number with the room object. </summary>
         private readonly Dictionary<int, Room> roomMap;
+
+        /// <summary> Maps the reference with list of the room numbers that booking reference represents. </summary>
         private readonly Dictionary<string, List<int>> bookingRefRoomNumMap;
 
         public Hotel(int[] roomNums)
@@ -21,10 +22,24 @@
             }
         }
 
+        /// <summary> Checks if the room is already booked for given days array. </summary>
+        /// <param name="days">Array of days to check.</param>
+        /// <param name="roomNumber">Room number.</param>
+        /// <returns>A value indicating if (even for a single day in given array) room is already booked. True means its booked, false otherwise.</returns>
         public bool RoomBooked(int[] days, int roomNumber)
         {
-            Room room = roomMap[roomNumber];
+            // get the room object using given room number...
+            // we can throw an exception if the roomNumber is invalid, but its not in the spec document.
+            // Therefore, it is assumed that the roomNumber is valid.
+
+            Room room = roomMap[roomNumber]; // constant lookup..
+
+            // Get all the days that are booked for given room.
             int[] bookedDays = room.GetAllBookedDays();
+
+            // loop through each day and check if we have a match. 
+            // This is O(n2 - n square) because we are checking 2 arrays...
+            // This should be improved but due to time limitation, im leaving it as is for now.
             foreach (int day in days)
             {
                 foreach (int bookingDay in bookedDays)
@@ -36,37 +51,65 @@
                 }
             }
 
+            // returning false means we do not find any booked room for given days.
             return false;
         }
 
+        /// <summary> Books the room with given booking reference for the days for the room number. </summary>
+        /// <param name="bookingRef">The booking reference to keep track of days and room.</param>
+        /// <param name="days">Array containing the days to book.</param>
+        /// <param name="roomNum">The room number to book.</param>
+        /// <returns>A value indicating if the booking was successful. True means successful, false otherwise.</returns>
         public bool BookRoom(string bookingRef, int[] days, int roomNum)
         {
-            Room roomToBook = roomMap[roomNum];
-
+            // using RoomBooked method to check if this room is available for given days.
             if (!RoomBooked(days, roomNum))
             {
+                // once we are here it means we have unbooked days for this room number..
+                // so lets book this room.
+
+                // get the room object using given room number...
+                // we can throw an exception if the roomNumber is invalid, but its not in the spec document.
+                // Therefore, it is assumed that the roomNumber is valid.
+                Room roomToBook = roomMap[roomNum];
+
+                // since we have already checked if this room has given days available 
+                // we can just call it to book.
                 roomToBook.Book(bookingRef, days);
 
+                // update bookingRefRoomNumMap mapper to keep track of booking reference with the rooms.
+                // we need list of rooms because in Cancel booking method, we only have the booking reference 
+                
                 List<int> roomNumbers = new List<int>();
                 roomNumbers.Add(roomNum);
                 bookingRefRoomNumMap.Add(bookingRef, roomNumbers);
                 return true;
             }
 
+            // returning false means we could not find the vacant room for given array of days.
             return false;
         }
 
+        /// <summary> Updates the existing booking.  </summary>
+        /// <param name="bookingRef">The booking reference to find existing booking that needs updating.</param>
+        /// <param name="days">The new array of days to change to.</param>
+        /// <param name="roomNum">The room number to update the booking.</param>
+        /// <returns>A value indicating if the update booking was successful. True means successful, false otherwise.</returns>
         public bool UpdateBooking(string bookingRef, int[] days, int roomNum)
         {
+            // first we check if the booking reference is valid.
             if (!bookingRefRoomNumMap.ContainsKey(bookingRef))
             {
                 throw new NoSuchBookingException();
             }
 
+            // Get the room object that needs updating.
             Room roomToUpdate = roomMap[roomNum];
 
+            // check if we can update the rooms for given reference and room number.
             if (CanUpdate(bookingRef, days, roomNum))
             {
+                // go ahead and update the existing booking.
                 roomToUpdate.Book(bookingRef, days);
                 return true;
             }
@@ -74,7 +117,11 @@
             return false;
         }
 
-
+        /// <summary> Determines if existing booking can be update with given days. </summary>
+        /// <param name="bookingRef">Existing booking reference.</param>
+        /// <param name="days">New days to update.</param>
+        /// <param name="roomNum">The room number.</param>
+        /// <returns>A value indicating if its okay to update. True means it can be update, false otherwise.</returns>
         private bool CanUpdate(string bookingRef, int[] days, int roomNum)
         {
             Room roomToUpdate = roomMap[roomNum];
@@ -99,18 +146,25 @@
                 }
             }
 
+            // return true when there is not conflict between all the days that are booked for the room (roomNum)
+            // and given array of days.
             return true;
         }
 
+        /// <summary> Cancels the existing booking, removes it from the system. </summary>
+        /// <param name="bookingRef">The booking reference to remove.</param>
         public void CancelBooking(string bookingRef)
         {
+            // check if given booking reference is a valid one.
             if (!bookingRefRoomNumMap.ContainsKey(bookingRef))
             {
                 throw new NoSuchBookingException();
             }
 
+            // since we are not given the room number, we have to get all those room numbers for which this booking reference was made.
             List<int> roomNums =  bookingRefRoomNumMap[bookingRef];
 
+            // loop through each room and cancel the booking.
             foreach (int nextRoomNum in roomNums)
             {
                 Room bookingToCancel = roomMap[nextRoomNum];
@@ -119,7 +173,6 @@
 
             // once all the rooms booking is cancelled, then remove the reference from bookingRefRoomNumMap hashtable.
             bookingRefRoomNumMap.Remove(bookingRef);
-
         }
 
         public bool RoomsBooked(int[] days, int[] roomNums)
