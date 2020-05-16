@@ -28,14 +28,27 @@
         /// <returns>A value indicating if (even for a single day in given array) room is already booked. True means its booked, false otherwise.</returns>
         public bool RoomBooked(int[] days, int roomNumber)
         {
+            if (days == null || days.Length == 0)
+            {
+                // if no days are given then there is nothing to check.
+                // return early.
+                return false;
+            }
+
             // get the room object using given room number...
             // we can throw an exception if the roomNumber is invalid, but its not in the spec document.
             // Therefore, it is assumed that the roomNumber is valid.
-
             Room room = roomMap[roomNumber]; // constant lookup..
 
             // Get all the days that are booked for given room.
             int[] bookedDays = room.GetAllBookedDays();
+
+            if (bookedDays.Length == 0)
+            {
+                // if no days are booked then there is not need to check for given days.
+                // we can return early from this method.
+                return false;
+            }
 
             // loop through each day and check if we have a match. 
             // This is O(n2 - n square) because we are checking 2 arrays...
@@ -190,6 +203,13 @@
 
         public bool BookRooms(string bookingRef, int[] days, int[] roomNums)
         {
+            if (bookingRefRoomNumMap.ContainsKey(bookingRef))
+            {
+                // throw exception because bookingRef must be a new booking reference.
+                // the client must update if existing booking reference is used.
+            }
+
+
             if (!RoomsBooked(days, roomNums))
             {
                 // this means we can book given days in given room numbers....

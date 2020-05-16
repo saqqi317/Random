@@ -51,7 +51,14 @@ namespace MurtazaAssignement
 
             bool updateRoomsResult = hotel.UpdateBooking(bookingRef3, days5, roomsToUpdate);
 
-            hotel.CancelBooking(bookingRef3);
+            //hotel.CancelBooking(bookingRef3);
+
+
+            int[] days6 = new[] { 33, 35, 36, 39, 28 };
+            int[] roomsTBook = new[] { 4, 6, 12 };
+
+            // this should be false...
+            bool newBooking = hotel.BookRooms(bookingRef5, days6, roomsTBook);
         }
     }
 }
