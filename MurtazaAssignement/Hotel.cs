@@ -140,9 +140,9 @@
             // Get all the booked days for roomNum room skipping this bookingRef 
             // because we do not want to check the booking reference that we want to update.
             HashSet<int> bookedWithOtherBookingRef = roomToUpdate.GetAllBookedDays(bookingRef);
-
             if (bookedWithOtherBookingRef.Count == 0)
             {
+                // if there is nothing booked for this room, then we can update given booking reference.
                 return true;
             }
 
