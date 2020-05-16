@@ -41,9 +41,9 @@
             Room room = roomMap[roomNumber]; // constant lookup..
 
             // Get all the days that are booked for given room.
-            int[] bookedDays = room.GetAllBookedDays();
+            HashSet<int> bookedDays = room.GetAllBookedDays();
 
-            if (bookedDays.Length == 0)
+            if (bookedDays.Count == 0)
             {
                 // if no days are booked then there is not need to check for given days.
                 // we can return early from this method.
@@ -51,16 +51,14 @@
             }
 
             // loop through each day and check if we have a match. 
-            // This is O(n2 - n square) because we are checking 2 arrays...
+            // This is O(n) - linear because we are checking elements of days array in a hashset.
             // This should be improved but due to time limitation, im leaving it as is for now.
             foreach (int day in days)
             {
-                foreach (int bookingDay in bookedDays)
+                // bookedDays hashset gives us constant time lookup.
+                if (bookedDays.Contains(day))
                 {
-                    if (day == bookingDay)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 

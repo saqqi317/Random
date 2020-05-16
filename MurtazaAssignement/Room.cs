@@ -8,12 +8,12 @@
     public class Room
     {
         /// <summary> Maps the bookingRef with the days booked for this room. </summary>
-        private readonly IDictionary<string, int[]> bookingRefDaysMapper;
+        private readonly IDictionary<string, HashSet<int>> bookingRefDaysMapper;
         
         public Room(int number)
         {
             this.Number = number;
-            bookingRefDaysMapper = new Dictionary<string, int[]>();
+            bookingRefDaysMapper = new Dictionary<string, HashSet<int>>();
         }
 
         /// <summary> Gets or sets the room number. </summary>
@@ -32,23 +32,23 @@
             if (!bookingRefDaysMapper.ContainsKey(bookingRef))
             {
                 // add new booking.
-                bookingRefDaysMapper.Add(bookingRef, days);
+                bookingRefDaysMapper.Add(bookingRef, new HashSet<int>(days));
             }
             else
             {
                 // update booking reference.
-                bookingRefDaysMapper[bookingRef] = days;
+                bookingRefDaysMapper[bookingRef] = new HashSet<int>(days);
             }
         }
 
         /// <summary> Gets all the days that are booked for this room regardless of the booking reference. </summary>
         /// <returns>The array containing the days that are booked for this room.</returns>
-        public int[] GetAllBookedDays()
+        public HashSet<int> GetAllBookedDays()
         {
-            List<int> daysBooked = new List<int>();
+            HashSet<int> daysBooked = new HashSet<int>();
             
             // loop through all the bookingRefs that contain array of days of booking.
-            foreach (int[] days in bookingRefDaysMapper.Values)
+            foreach (HashSet<int> days in bookingRefDaysMapper.Values)
             {
                 // add each day of booking into the array to return.
                 foreach (int day in days)
@@ -57,7 +57,7 @@
                 }
             }
 
-            return daysBooked.ToArray();
+            return daysBooked;
         }
 
         /// <summary> Gets all the days that are booked for this room except for the given booking reference. </summary>
