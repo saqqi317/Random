@@ -2,16 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.Win32;
 
     /// <summary> Represents a room object in a hotel. </summary>
     public class Room
     {
         private readonly IDictionary<string, int[]> bookingRefDaysMapper;
         
-        
-
         public Room(int number)
         {
             this.Number = number;
@@ -34,17 +30,6 @@
                 // update booking reference.
                 bookingRefDaysMapper[bookingRef] = days;
             }
-            
-        }
-
-        public int[] GetBookedDays(string bookingRef)
-        {
-            if (bookingRefDaysMapper.ContainsKey(bookingRef))
-            {
-                return bookingRefDaysMapper[bookingRef];
-            }
-
-            throw new NoSuchBookingException();
         }
 
         public int[] GetAllBookedDays()
@@ -65,8 +50,6 @@
         public int[] GetAllBookedDays(string skipBookingRef)
         {
             List<int> daysBooked = new List<int>();
-
-
             foreach (string key in bookingRefDaysMapper.Keys)
             {
                 if (key != skipBookingRef)
