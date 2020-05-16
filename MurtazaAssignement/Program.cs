@@ -59,6 +59,27 @@ namespace MurtazaAssignement
 
             // this should be false...
             bool newBooking = hotel.BookRooms(bookingRef5, days6, roomsTBook);
+
+            int room12 = 12;
+            int[] days7 = new[] { 43, 45, 46, 49, 48 };
+            string bookingRef6 = "BookingRef6";
+            hotel.BookRoom(bookingRef6, days7, room12);
+
+            int[] days8 = new[] { 53, 55, 56, 59, 58 };
+            string bookingRef7 = "BookingRef7";
+            hotel.BookRoom(bookingRef7, days8, room12);
+
+
+
+            int[] days9 = new[] { 63, 65, 66, 69, 68 };
+            string bookingRef9 = "BookingRef9";
+            hotel.BookRoom(bookingRef9, days9, room12);
+
+            int[] days8_update = new[] { 53, 55, 106, 59, 58 };
+
+            // this should be true.
+            bool updateResult2 = hotel.UpdateBooking(bookingRef7, days8_update, room12);
+
         }
     }
 }

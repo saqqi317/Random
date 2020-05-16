@@ -63,9 +63,10 @@
         /// <summary> Gets all the days that are booked for this room except for the given booking reference. </summary>
         /// <param name="skipBookingRef">The reference to skip.</param>
         /// <returns>The array containing the days that are booked for this room except the given bookingRef.</returns>
-        public int[] GetAllBookedDays(string skipBookingRef)
+        public HashSet<int> GetAllBookedDays(string skipBookingRef)
         {
-            List<int> daysBooked = new List<int>();
+            HashSet<int> daysBooked = new HashSet<int>();
+            
             foreach (string key in bookingRefDaysMapper.Keys)
             {
                 // skip the given booking reference and only return those booked for other booking references.
@@ -78,7 +79,7 @@
                 }
             }
 
-            return daysBooked.ToArray();
+            return daysBooked;
         }
 
         /// <summary> Removes the booking days for given reference. </summary>

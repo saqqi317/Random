@@ -90,7 +90,7 @@
 
                 // update bookingRefRoomNumMap mapper to keep track of booking reference with the rooms.
                 // we need list of rooms because in Cancel booking method, we only have the booking reference 
-                
+
                 List<int> roomNumbers = new List<int>();
                 roomNumbers.Add(roomNum);
                 bookingRefRoomNumMap.Add(bookingRef, roomNumbers);
@@ -139,21 +139,22 @@
 
             // Get all the booked days for roomNum room skipping this bookingRef 
             // because we do not want to check the booking reference that we want to update.
-            int[] bookedWithOtherBookingRef = roomToUpdate.GetAllBookedDays(bookingRef);
+            HashSet<int> bookedWithOtherBookingRef = roomToUpdate.GetAllBookedDays(bookingRef);
+
+            if (bookedWithOtherBookingRef.Count == 0)
+            {
+                return true;
+            }
 
             // bookedWithOtherBookingRef holds all the booked days for roomNum room number except bookingRef booking reference.
-
-            // loop through each booked day to check if there is any match found with input days array...
-            foreach (int bookedDay in bookedWithOtherBookingRef)
+            // loop through each day from the input and check if there is any match found in the already booked days...
+            foreach (int nextDay in days)
             {
-                foreach (int nextDay in days)
+                if (bookedWithOtherBookingRef.Contains(nextDay))
                 {
-                    if (nextDay == bookedDay)
-                    {
-                        // we have found the match with other booking ref than the one we want to update
-                        // therefore, we cant update this booking ref.
-                        return false;
-                    }
+                    // we have found the match with other booking ref than the one we want to update
+                    // therefore, we cant update this booking ref.
+                    return false;
                 }
             }
 
@@ -173,7 +174,7 @@
             }
 
             // since we are not given the room number, we have to get all those room numbers for which this booking reference was made.
-            List<int> roomNums =  bookingRefRoomNumMap[bookingRef];
+            List<int> roomNums = bookingRefRoomNumMap[bookingRef];
 
             // loop through each room and cancel the booking.
             foreach (int nextRoomNum in roomNums)
@@ -206,8 +207,7 @@
                 // throw exception because bookingRef must be a new booking reference.
                 // the client must update if existing booking reference is used.
             }
-
-
+            
             if (!RoomsBooked(days, roomNums))
             {
                 // this means we can book given days in given room numbers....
@@ -235,7 +235,7 @@
             // loop through the list or rooms and check if update is possible..
             foreach (int nextRoomNumber in roomNums)
             {
-                if(!CanUpdate(bookingRef, days, nextRoomNumber))
+                if (!CanUpdate(bookingRef, days, nextRoomNumber))
                 {
                     return false;
                 }
