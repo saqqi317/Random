@@ -1,24 +1,28 @@
 package hotelSystem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
 public class Hotel 
 {
 		// Maps the room number with the room object.
-		HashMap<Integer, Room> roomMap = new HashMap<Integer, Room>();
+		Map<Integer, Room> roomMap = new ConcurrentHashMap<Integer, Room>();
 	    
 		// Maps the reference with the list of the room numbers that booking reference represents.
-	    HashMap<String, List<Integer>> bookingRefRoomNumMap = new HashMap<String, List<Integer>>();
+		Map<String, List<Integer>> bookingRefRoomNumMap = new ConcurrentHashMap<String, List<Integer>>();
 	    
 	    Semaphore lock = new Semaphore(1);	    	    
 	    
-	    /// <summary> Class Constructor Method </summary>
-	    /// <param name="roomNums"> Array of rooms which Hotel contains</param>
+	    /**
+	     * Class Constructor Method
+	     * @param roomNums Array of rooms which Hotel contains
+	     */
 	    public Hotel(int[] roomNums)
 	    {
 	    	for(int roomNumber : roomNums)
@@ -27,10 +31,12 @@ public class Hotel
 	    	}
 	    }
 	    
-	    /// <summary> Checks if the room is already booked for given days array. </summary>
-	    /// <param name="days">Array of days to check.</param>
-	    /// <param name="roomNumber">Room number.</param>
-	    /// <returns>A value indicating if (even for a single day in given array) room is already booked. True means its booked, false otherwise.</returns>
+	    /**
+	     * Checks if the room is already booked for given days array
+	     * @param days Array of days to check
+	     * @param roomNumber Room number
+	     * @return A value indicating if (even for a single day in given array) room is already booked. True means its booked, false otherwise
+	     */
 	    public boolean roomBooked(Integer[] days, int roomNumber)
 	    {
 	    	if(days == null || days.length == 0)
@@ -70,11 +76,13 @@ public class Hotel
 	        return false;    	
 	    }
 	    
-	    /// <summary> Books the room with given booking reference for the days for the room number. </summary>
-	    /// <param name="bookingRef">The booking reference to keep track of days and room.</param>
-	    /// <param name="days">Array containing the days to book.</param>
-	    /// <param name="roomNum">The room number to book.</param>
-	    /// <returns>A value indicating if the booking was successful. True means successful, false otherwise.</returns>
+	    /**
+	     * Books the room with given booking reference for the days for the room number
+	     * @param bookingRef The booking reference to keep track of days and room
+	     * @param days Array containing the days to book
+	     * @param roomNum The room number to book
+	     * @return A value indicating if the booking was successful. True means successful, false otherwise
+	     */
 	    public boolean bookRoom(String bookingRef, Integer[] days, int roomNum)
 	    {
 	    	try 
@@ -119,11 +127,14 @@ public class Hotel
 	    
 	    
 	    
-	    /// <summary> Updates the existing booking.  </summary>
-	    /// <param name="bookingRef">The booking reference to find existing booking that needs updating.</param>
-	    /// <param name="days">The new array of days to change to.</param>
-	    /// <param name="roomNum">The room number to update the booking.</param>
-	    /// <returns>A value indicating if the update booking was successful. True means successful, false otherwise.</returns>
+	    /**
+	     * Updates the existing booking
+	     * @param bookingRef The booking reference to find existing booking that needs updating
+	     * @param days The new array of days to change to
+	     * @param roomNum The room number to update the booking
+	     * @return A value indicating if the update booking was successful. True means successful, false otherwise
+	     * @throws NoSuchBookingException
+	     */
 	    public boolean updateBooking(String bookingRef, Integer[] days, int roomNum) throws NoSuchBookingException
 	    {
 	    	
@@ -161,8 +172,11 @@ public class Hotel
 	    	return false;
 	    }
 	    
-	    /// <summary> Cancels the existing booking, removes it from the system. </summary>
-	    /// <param name="bookingRef">The booking reference to remove.</param>
+	    /**
+	     * Cancels the existing booking, removes it from the system
+	     * @param bookingRef The booking reference to remove
+	     * @throws NoSuchBookingException
+	     */
 	    public void cancelBooking(String bookingRef) throws NoSuchBookingException 
 	    {
 	    	try 
@@ -200,9 +214,12 @@ public class Hotel
 			}	    		    		    	
 	    }
 	    
-	    /// <summary> Checks if the specified rooms are booked for the given days. </summary>
-	    /// <param name="days">The given days for booking.</param>
-	    /// <param name="roomNums">The room numbers to check for booking on particular days.</param>
+	    /**
+	     * Checks if the specified rooms are booked for the given days
+	     * @param days The given days for booking
+	     * @param roomNums The room numbers to check for booking on particular days
+	     * @return
+	     */
 	    public boolean roomsBooked(Integer[] days, int[] roomNums)
 	    {
 	    	for(int nextRoomNum : roomNums)
@@ -260,11 +277,14 @@ public class Hotel
 	    	return false;
 	    }
 	    
-	    /// <summary> Updates the existing booking.  </summary>
-        /// <param name="bookingRef">The booking reference to find existing booking that needs updating.</param>
-        /// <param name="days">The new array of days to change to.</param>
-        /// <param name="roomNum">The room number to update the booking.</param>
-        /// <returns>A value indicating if the update booking was successful. True means successful, false otherwise.</returns>
+	    /**
+	     * Updates the existing booking
+	     * @param bookingRef The booking reference to find existing booking that needs updating
+	     * @param days The new array of days to change to
+	     * @param roomNums The room number to update the booking
+	     * @return A value indicating if the update booking was successful. True means successful, false otherwise
+	     * @throws NoSuchBookingException
+	     */
 	    public boolean updateBooking(String bookingRef, Integer[] days, int[] roomNums) throws NoSuchBookingException
 	    {
 	    	try 
@@ -301,12 +321,14 @@ public class Hotel
 	    	lock.release();
 	    	return true;
 	    }
-	    
-	    /// <summary> Determines if existing booking can be update with given days. </summary>
-        /// <param name="bookingRef">Existing booking reference.</param>
-        /// <param name="days">New days to update.</param>
-        /// <param name="roomNum">The room number.</param>
-        /// <returns>A value indicating if its okay to update. True means it can be update, false otherwise.</returns>
+	   
+	    /**
+	     * Determines if existing booking can be update with given days
+	     * @param bookingRef Existing booking reference
+	     * @param days New days to update
+	     * @param roomNum A value indicating if its okay to update. True means it can be update, false otherwise
+	     * @return
+	     */
 	    private boolean canUpdate(String bookingRef, Integer[] days, int roomNum)
 	    {
 	    	Room roomToUpdate = roomMap.get(roomNum);
