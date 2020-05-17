@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
-
 public class Room 
 {
 	public int number;
@@ -17,16 +16,15 @@ public class Room
 	// Semaphore lock = new Semaphore(1);
 	
 	public Room(int num) {
-		this.number = num;		
+		number = num;		
 	}		
 	
-	/// <summary> Books this room for given array of days with booking reference. </summary>
-    /// <param name="bookingRef">The reference booking. </param>
-    /// <param name="days">Array of days to book this room. </param>
-	public void book(String bookingRef, Integer[] days)	{
-		try 
-		{			
-			//lock.acquire();
+	/**
+	 * Books this room for given array of days with booking reference.
+	 * @param bookingRef The reference booking.
+	 * @param days Array of days to book this room.
+	 */
+	public void book(String bookingRef, Integer[] days)	{		
 			
 			// if the booking reference already exists then we should update it, 
 	        // if its a new one then we should add.
@@ -34,25 +32,20 @@ public class Room
 	        // because the Hotel class already checks them.			
 	        if (!bookingRefDaysMapper.containsKey(bookingRef)) {
 	            // add new booking.
-	        	this.bookingRefDaysMapper.put(bookingRef, new HashSet<Integer>(Arrays.asList(days)));	            	        	
+	        	bookingRefDaysMapper.put(bookingRef, new HashSet<Integer>(Arrays.asList(days)));	            	        	
 	        }
 	        else {
 	            // update booking reference.	            
 	        	bookingRefDaysMapper.replace(bookingRef, new HashSet<Integer>(Arrays.asList(days)));	        	        	
 	        }
-	        
-	        //lock.release();
-		} 
-		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}				
 	}
 	
-	/// <summary> Gets all the days that are booked for this room regardless of the booking reference. </summary>
-    /// <returns>The array containing the days that are booked for this room.</returns>
-	public HashSet<Integer> getAllBookedDays() {
-		HashSet<Integer> daysBooked = new HashSet<Integer>();
+	/**
+	 * Gets all the days that are booked for this room regardless of the booking reference
+	 * @return The array containing the days that are booked for this room
+	 */
+	public Set<Integer> getAllBookedDays() {
+		Set<Integer> daysBooked = new HashSet<Integer>();
 		
 		// loop through all the bookingRefs that contain array of days of booking.
 		for(HashSet<Integer> days : bookingRefDaysMapper.values()) {
@@ -65,11 +58,13 @@ public class Room
 		return daysBooked;
 	}
 	
-	/// <summary> Gets all the days that are booked for this room except for the given booking reference. </summary>
-    /// <param name="skipBookingRef">The reference to skip.</param>
-    /// <returns>The array containing the days that are booked for this room except the given bookingRef.</returns>
-	public HashSet<Integer> getAllBookedDays(String skipBookingRef)	{
-		HashSet<Integer> daysBooked = new HashSet<Integer>();
+	/**
+	 * Gets all the days that are booked for this room except for the given booking reference.
+	 * @param skipBookingRef The reference to skip.
+	 * @return The array containing the days that are booked for this room except the given bookingRef
+	 */
+	public Set<Integer> getAllBookedDays(String skipBookingRef)	{
+		Set<Integer> daysBooked = new HashSet<Integer>();
 		
 		for(String key : bookingRefDaysMapper.keySet())	{
 			// skip the given booking reference and only return those booked for other booking references.
@@ -82,11 +77,12 @@ public class Room
 		return daysBooked;	
 	}
 	
-	/// <summary> Removes the booking days for given reference. </summary>
-    /// <param name="bookingRef">The reference to remove.</param>
+	/**
+	 * Removes the booking days for given reference
+	 * @param bookingRef The reference to remove
+	 * @throws NoSuchBookingException
+	 */
 	public void cancelBooking(String bookingRef) throws NoSuchBookingException	{
-		try {
-			//lock.acquire();
 			
 			// if we already have a reference then remove it.
 	        if (bookingRefDaysMapper.containsKey(bookingRef)) {
@@ -96,11 +92,5 @@ public class Room
 	        	// throw NoSuchBookingException if the reference is invalid or already removed / deleted.
 	        	throw new NoSuchBookingException(bookingRef);
 	        }
-	        //lock.release();
-		} 
-		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
