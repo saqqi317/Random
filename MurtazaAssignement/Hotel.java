@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 public class Hotel 
@@ -45,7 +46,7 @@ public class Hotel
 	    	Room room = roomMap.get(roomNumber);
 	    	
 	    	// Get all the days that are booked for given room.
-	    	HashSet<Integer> bookedDays = new HashSet<Integer>();    	
+	    	Set<Integer> bookedDays = new HashSet<Integer>();    	
 	    	bookedDays = room.getAllBookedDays();
 	    	
 	    	if(bookedDays.size() == 0)
@@ -312,8 +313,9 @@ public class Hotel
 	    	
 	        // Get all the booked days for roomNum room skipping this bookingRef 
 	        // because we do not want to check the booking reference that we want to update.
-	    	HashSet<Integer> bookedWithOtherBookingRef = new HashSet<Integer>();
-	    	bookedWithOtherBookingRef = roomToUpdate.getAllBookedDays(bookingRef);
+	    	// HashSet<Integer> bookedWithOtherBookingRef = new HashSet<Integer>();
+	    	
+	    	Set<Integer> bookedWithOtherBookingRef = roomToUpdate.getAllBookedDays(bookingRef);
 	    	
 	    	
 	    	if(bookedWithOtherBookingRef.size() == 0)
