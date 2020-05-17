@@ -1,6 +1,7 @@
 ﻿namespace MurtazaAssignement
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
 
     /// <summary> Represents a room object in a hotel. It keeps track of the bookings (bookingRef) and the days
@@ -8,12 +9,12 @@
     public class Room
     {
         /// <summary> Maps the bookingRef with the days booked for this room. </summary>
-        private readonly IDictionary<string, HashSet<int>> bookingRefDaysMapper;
+        private readonly ConcurrentDictionary<string, HashSet<int>> bookingRefDaysMapper;
         
         public Room(int number)
         {
             this.Number = number;
-            bookingRefDaysMapper = new Dictionary<string, HashSet<int>>();
+            bookingRefDaysMapper = new ConcurrentDictionary<string, HashSet<int>>();
         }
 
         /// <summary> Gets or sets the room number. </summary>
@@ -29,16 +30,9 @@
             // if its a new one then we should add.
             // if is safe to assume that there is no conflict for the days that are being passed in 
             // because the Hotel class already checks them.
-            if (!bookingRefDaysMapper.ContainsKey(bookingRef))
-            {
-                // add new booking.
-                bookingRefDaysMapper.Add(bookingRef, new HashSet<int>(days));
-            }
-            else
-            {
-                // update booking reference.
-                bookingRefDaysMapper[bookingRef] = new HashSet<int>(days);
-            }
+
+            bookingRefDaysMapper.AddOrUpdate(bookingRef, new HashSet<int>(days), (s, set) => set);
+            //bookingRefDaysMapper[bookingRef] = new HashSet<int>(days);
         }
 
         /// <summary> Gets all the days that are booked for this room regardless of the booking reference. </summary>
