@@ -18,10 +18,8 @@ public class Hotel
 	 * Class Constructor Method
 	 * @param roomNums Array of rooms which Hotel contains
 	 */
-	public Hotel(int[] roomNums)
-	{
-		for(int roomNumber : roomNums)
-		{
+	public Hotel(int[] roomNums) {
+		for(int roomNumber : roomNums) {
 			roomMap.put(roomNumber, new Room(roomNumber));
 		}
 	}
@@ -32,10 +30,8 @@ public class Hotel
 	 * @param roomNumber Room number
 	 * @return A value indicating if (even for a single day in given array) room is already booked. True means its booked, false otherwise
 	 */
-	public boolean roomBooked(Integer[] days, int roomNumber)
-	{
-		if(days == null || days.length == 0)
-		{
+	public boolean roomBooked(Integer[] days, int roomNumber) {
+		if(days == null || days.length == 0) {
 	        // if no days are given then there is nothing to check.
 	        // return early.
 			return false;
@@ -48,19 +44,16 @@ public class Hotel
 		
 		// Get all the days that are booked for given room.	    	
 		Set<Integer> bookedDays = room.getAllBookedDays();	    	
-		if(bookedDays.size() == 0)
-		{
+		if(bookedDays.size() == 0) {
 			// if no days are booked then there is not need to check for given days.
 	        // we can return early from this method.
 	        return false;
 		}
 		
 		// loop through each day and check if we have a match. 	        
-	    for (int day : days)
-	    {
+	    for (int day : days) {
 	        // bookedDays Hashset gives us constant time lookup.
-	        if (bookedDays.contains(day))
-	        {
+	        if (bookedDays.contains(day)) {
 	            return true;
 	        }
 	    }
@@ -76,12 +69,11 @@ public class Hotel
 	 * @param roomNum The room number to book
 	 * @return A value indicating if the booking was successful. True means successful, false otherwise
 	 */
-	public boolean bookRoom(String bookingRef, Integer[] days, int roomNum)
-	{
-									
+	public boolean bookRoom(String bookingRef, Integer[] days, int roomNum)	{
+        
         // using RoomBooked method to check if this room is available for given days.
-	 if (!roomBooked(days, roomNum))
-	 {
+        if (!roomBooked(days, roomNum))
+        {
             // once we are here it means we have unbooked days for this room number.
             // so booking this room is possible.
             // get the room object using given room number.
@@ -99,8 +91,8 @@ public class Hotel
             roomNumbers.add(roomNum);
             bookingRefRoomNumMap.put(bookingRef, roomNumbers);
             return true;        	
-	 }
-          
+        }
+        
 	    // returning false means we could not find the vacant room for given array of days.
 	    return false;
 	}
@@ -113,10 +105,8 @@ public class Hotel
 	 * @return A value indicating if the update booking was successful. True means successful, false otherwise
 	 * @throws NoSuchBookingException
 	 */
-	public boolean updateBooking(String bookingRef, Integer[] days, int roomNum) throws NoSuchBookingException
-	{                                        
-        if(!bookingRefRoomNumMap.containsKey(bookingRef))
-        {
+	public boolean updateBooking(String bookingRef, Integer[] days, int roomNum) throws NoSuchBookingException	{                                        
+        if(!bookingRefRoomNumMap.containsKey(bookingRef)) {
             // throw NoSuchBookingException if the reference is not found.
             throw new NoSuchBookingException(bookingRef);
         }
@@ -124,8 +114,7 @@ public class Hotel
         // Get the room object that needs updating.
         Room roomToUpdate = roomMap.get(roomNum);            
         // check if we can update the rooms for given reference and room number.
-        if(canUpdate(bookingRef, days, roomNum))
-        {   
+        if(canUpdate(bookingRef, days, roomNum)) {   
             // updating the existing booking.
             roomToUpdate.book(bookingRef, days);
             return true;
@@ -139,27 +128,23 @@ public class Hotel
 	 * @param bookingRef The booking reference to remove
 	 * @throws NoSuchBookingException
 	 */
-	public void cancelBooking(String bookingRef) throws NoSuchBookingException 
-	{	    									
-	 //Check if given booking reference is a valid one.
-	 if (!bookingRefRoomNumMap.containsKey(bookingRef))
-	 {
-	     throw new NoSuchBookingException(bookingRef);
-	 }
-	 
-	 // since we are not given the room number, we have to get all those room numbers for which this booking reference was made.		    
-	 List<Integer> roomNums = bookingRefRoomNumMap.get(bookingRef);		    
-	 // loop through each room and cancel the booking.
-	 for(int nextRoomNum : roomNums)
-	 {
-	 	Room bookingToCancel = roomMap.get(nextRoomNum);
-	 	bookingToCancel.cancelBooking(bookingRef);
-	 }
-	 
-	 // once all the rooms booking is cancelled, then remove the reference from bookingRefRoomNumMap hashtable.
-	 bookingRefRoomNumMap.remove(bookingRef);		    
-	 System.out.println("\n *** Booking is cancelled for ref: " + bookingRef + " ***\n");	        		        
-	  		    		    	
+	public void cancelBooking(String bookingRef) throws NoSuchBookingException {	    									
+        //Check if given booking reference is a valid one.
+        if (!bookingRefRoomNumMap.containsKey(bookingRef))	 {
+            throw new NoSuchBookingException(bookingRef);
+        }
+        
+        // since we are not given the room number, we have to get all those room numbers for which this booking reference was made.		    
+        List<Integer> roomNums = bookingRefRoomNumMap.get(bookingRef);		    
+        // loop through each room and cancel the booking.
+        for(int nextRoomNum : roomNums) {
+            Room bookingToCancel = roomMap.get(nextRoomNum);
+            bookingToCancel.cancelBooking(bookingRef);
+        }
+        
+        // once all the rooms booking is cancelled, then remove the reference from bookingRefRoomNumMap hashtable.
+        bookingRefRoomNumMap.remove(bookingRef);		    
+        System.out.println("\n *** Booking is cancelled for ref: " + bookingRef + " ***\n");	        		        	  		    		    	
 	}
 	
 	/**
@@ -168,12 +153,9 @@ public class Hotel
 	 * @param roomNums The room numbers to check for booking on particular days
 	 * @return
 	 */
-	public boolean roomsBooked(Integer[] days, int[] roomNums)
-	{
-		for(int nextRoomNum : roomNums)
-		{
-			if(this.roomBooked(days, nextRoomNum))
-			{
+	public boolean roomsBooked(Integer[] days, int[] roomNums) {
+		for(int nextRoomNum : roomNums) {
+			if(this.roomBooked(days, nextRoomNum)) {
 				return true;
 			}
 		}
@@ -181,31 +163,30 @@ public class Hotel
 		return false;
 	}
 	
-	public boolean bookRooms(String bookingRef, Integer[] days, int[] roomNums) throws NoSuchBookingException
-	{
+	public boolean bookRooms(String bookingRef, Integer[] days, int[] roomNums) throws NoSuchBookingException	{
 						
-	if(bookingRefRoomNumMap.containsKey(bookingRef)) 
-	 {
-	 	// throw exception because bookingRef must be a new booking reference.
-	     // the client must update if existing booking reference is used.
-	 	throw new NoSuchBookingException(bookingRef);
-	 }
-	 
-	 // Added list to fix HashMap's put method where we are adding
-	 // String,List<Integer> (key,value) pair
-	 List<Integer> roomNumsList = new ArrayList<Integer>();		    
-	 if(!roomsBooked(days, roomNums))
-	 {
-	     // this means we can book given days in given room numbers.
-	 	for(int nextRoomNum : roomNums)
-	 	{
-	 		roomNumsList.add(nextRoomNum);
-	 		Room roomToBook = roomMap.get(nextRoomNum);
-	 		roomToBook.book(bookingRef, days);
-	 	}
-	 	
-	 	bookingRefRoomNumMap.put(bookingRef, roomNumsList);
-	 }
+        if(bookingRefRoomNumMap.containsKey(bookingRef)) {
+            // throw exception because bookingRef must be a new booking reference.
+            // the client must update if existing booking reference is used.
+            throw new NoSuchBookingException(bookingRef);
+        }
+        
+        // Added list to fix HashMap's put method where we are adding
+        // String,List<Integer> (key,value) pair
+        List<Integer> roomNumsList = new ArrayList<Integer>();		    
+        if(!roomsBooked(days, roomNums))
+        {
+            // this means we can book given days in given room numbers.
+            for(int nextRoomNum : roomNums)
+            {
+                roomNumsList.add(nextRoomNum);
+                Room roomToBook = roomMap.get(nextRoomNum);
+                roomToBook.book(bookingRef, days);
+            }
+            
+            bookingRefRoomNumMap.put(bookingRef, roomNumsList);
+            return true;
+        }
 	
 		return false;
 	}
@@ -218,25 +199,20 @@ public class Hotel
 	 * @return A value indicating if the update booking was successful. True means successful, false otherwise
 	 * @throws NoSuchBookingException
 	 */
-	public boolean updateBooking(String bookingRef, Integer[] days, int[] roomNums) throws NoSuchBookingException
-	{										
-        if(!bookingRefRoomNumMap.containsKey(bookingRef))
-        {
+	public boolean updateBooking(String bookingRef, Integer[] days, int[] roomNums) throws NoSuchBookingException	{										
+        if(!bookingRefRoomNumMap.containsKey(bookingRef)) {
             throw new NoSuchBookingException(bookingRef);
         }
 	 
         // loop through the list of rooms and check if update is possible.
-        for(int nextRoomNum : roomNums)
-        {
-            if(!canUpdate(bookingRef, days, nextRoomNum))
-            {		    			
+        for(int nextRoomNum : roomNums)  {
+            if(!canUpdate(bookingRef, days, nextRoomNum)) {
                 return false;
             }    		
         }
-	 		    
+        
         // Reaching to this part of the code means we can update, so will update all the bookings
-        for(int nextRoomNumber : roomNums)
-        {
+        for(int nextRoomNumber : roomNums) {
             Room roomToUpdate = roomMap.get(nextRoomNumber);
             roomToUpdate.book(bookingRef, days);
         }	    	
@@ -250,26 +226,21 @@ public class Hotel
 	 * @param roomNum A value indicating if its okay to update. True means it can be update, false otherwise
 	 * @return
 	 */
-	private boolean canUpdate(String bookingRef, Integer[] days, int roomNum)
-	{
+	private boolean canUpdate(String bookingRef, Integer[] days, int roomNum) {
 		Room roomToUpdate = roomMap.get(roomNum);
 		
 	    // Get all the booked days for roomNum room skipping this bookingRef 
-	    // because we do not want to check the booking reference that we want to update.
-			    	
+	    // because we do not want to check the booking reference that we want to update.			    	
 		Set<Integer> bookedWithOtherBookingRef = roomToUpdate.getAllBookedDays(bookingRef);
-		if(bookedWithOtherBookingRef.size() == 0)
-		{
+		if(bookedWithOtherBookingRef.size() == 0) {
 			// if there is nothing booked for this room, then we can update given booking reference.
 			return true;
 		}
 		
 		// bookedWithOtherBookingRef holds all the booked days for roomNum room number except bookingRef booking reference.
 	    // loop through each day from the input and check if there is any match found in the already booked days.
-		for(int nextDay : days)
-		{
-			if(bookedWithOtherBookingRef.contains(nextDay))
-			{
+		for(int nextDay : days) {
+			if(bookedWithOtherBookingRef.contains(nextDay)) {
 				// we have found the match with other booking reference than the one we want to update
 	            // therefore, we cannot update this booking reference.
 	            return false;
