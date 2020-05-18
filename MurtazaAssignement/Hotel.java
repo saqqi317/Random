@@ -186,6 +186,7 @@ public class Hotel
             
             bookingRefRoomNumMap.put(bookingRef, roomNumsList);
             return true;
+
         }
 	
 		return false;
@@ -249,5 +250,5 @@ public class Hotel
 		// return true when there is no conflict between all the days that are booked for the room (roomNum)
 	    // and given array of days.
 	    return true;	    	
-	}	    
+    }	 
 }
